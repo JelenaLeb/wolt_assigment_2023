@@ -69,3 +69,14 @@ def test_num_item_fee(payload, fee, expected_fee):
 )
 def test_friday_fee(payload, fee, expected_fee):
     assert fee_calculator.friday_fee(payload, fee) == expected_fee
+
+
+@pytest.mark.parametrize(
+    "payload, fee, expected_fee",
+    [
+        ({}, 1_56, 1_56),
+        ({}, 15_01, 15_00),
+    ],
+)
+def test_max_allowed_fee(payload, fee, expected_fee):
+    assert fee_calculator.max_allowed_fee(payload, fee) == expected_fee

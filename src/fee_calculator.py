@@ -24,7 +24,7 @@ def calculate_fee(payload: dict) -> int:
         distance_fee,
         num_item_fee,
         friday_fee,
-        # max_allowed_fee,
+        max_allowed_fee,
     ]
 
     fee = 0
@@ -68,3 +68,7 @@ def friday_fee(payload: dict, fee: int) -> int:
         return int(fee * 1.2)
 
     return fee
+
+
+def max_allowed_fee(payload: dict, fee: int) -> int:
+    return min(fee, MAX_FEE)
