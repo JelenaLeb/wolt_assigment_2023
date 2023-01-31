@@ -15,7 +15,7 @@ def calculate_fee(payload: dict) -> int:
     strategies = [
         cart_value_fee,
         distance_fee,
-        # num_item_fee,
+        num_item_fee,
         # friday_fee,
         # max_allowed_fee,
     ]
@@ -38,3 +38,14 @@ def distance_fee(payload: dict, fee: int) -> int:
     # every segment = 500 meters
     segment = math.ceil((payload["delivery_distance"] - 1000) / 500)
     return fee + BASE_FEE_DISTANCE + EXTRA_FEE_DISTANCE * segment
+
+
+def num_item_fee(payload: dict, fee: int) -> int:
+    if payload["number_of_items"] < 5:
+        return fee
+
+    additional_surcharge = (payload["number_of_items"] - 4) * NUM_ITEM_SURCHARGE
+    if payload["number_of_items"] <= 12:
+        return fee + additional_surcharge
+    return fee + additional_surcharge + EXTRA_BULK_FEE
+

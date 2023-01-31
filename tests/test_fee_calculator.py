@@ -44,3 +44,15 @@ def test_cart_value_fee(payload, fee, expected_fee):
 )
 def test_distance_fee(payload, fee, expected_fee):
     assert fee_calculator.distance_fee(payload, fee) == expected_fee
+
+
+@pytest.mark.parametrize(
+    "payload, fee, expected_fee",
+    [
+        ({"number_of_items": 4}, 0, 0),
+        ({"number_of_items": 12}, 0, 4_00),
+        ({"number_of_items": 13}, 0, 5_70),
+    ],
+)
+def test_num_item_fee(payload, fee, expected_fee):
+    assert fee_calculator.num_item_fee(payload, fee) == expected_fee
