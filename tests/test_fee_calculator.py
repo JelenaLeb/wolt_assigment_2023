@@ -15,6 +15,24 @@ from src import fee_calculator
             },
             0,
         ),
+        (
+            {
+                "cart_value": 790,
+                "delivery_distance": 2235,
+                "number_of_items": 4,
+                "time": "2021-10-12T13:00:00Z",
+            },
+            7_10,
+        ),
+        (
+            {
+                "cart_value": 1900,
+                "delivery_distance": 4235,
+                "number_of_items": 6,
+                "time": "2023-01-20T15:01:00Z",
+            },
+            12_00,
+        ),
     ],
 )
 def test_calculate_fee(payload, expected_fee):
