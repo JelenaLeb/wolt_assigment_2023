@@ -56,3 +56,16 @@ def test_distance_fee(payload, fee, expected_fee):
 )
 def test_num_item_fee(payload, fee, expected_fee):
     assert fee_calculator.num_item_fee(payload, fee) == expected_fee
+
+
+@pytest.mark.parametrize(
+    "payload, fee, expected_fee",
+    [
+        ({"time": "2021-10-12T13:00:00Z"}, 1_00, 1_00),
+        ({"time": "2023-01-20T18:00:01Z"}, 1_00, 1_20),
+        ({"time": "2023-01-20T18:01:11Z"}, 25_35, 30_42),
+        ({"time": "2023-01-20T19:00:01Z"}, 1_00, 1_00),
+    ],
+)
+def test_friday_fee(payload, fee, expected_fee):
+    assert fee_calculator.friday_fee(payload, fee) == expected_fee

@@ -1,5 +1,7 @@
 import math
 
+import dateutil.parser
+
 
 FREE_DELIVERY_MIN_AMOUNT = 100_00
 MAX_FEE = 15_00
@@ -7,6 +9,11 @@ EXTRA_BULK_FEE = 1_20
 NUM_ITEM_SURCHARGE = 50
 BASE_FEE_DISTANCE = 2_00
 EXTRA_FEE_DISTANCE = 1_00
+
+
+class InvalidPayload(Exception):
+    "raises domain exception when payload does not comply with specification"
+
 
 def calculate_fee(payload: dict) -> int:
     if payload["cart_value"] >= FREE_DELIVERY_MIN_AMOUNT:
@@ -16,7 +23,7 @@ def calculate_fee(payload: dict) -> int:
         cart_value_fee,
         distance_fee,
         num_item_fee,
-        # friday_fee,
+        friday_fee,
         # max_allowed_fee,
     ]
 
@@ -49,3 +56,15 @@ def num_item_fee(payload: dict, fee: int) -> int:
         return fee + additional_surcharge
     return fee + additional_surcharge + EXTRA_BULK_FEE
 
+
+def friday_fee(payload: dict, fee: int) -> int:
+    try:
+        dt = dateutil.parser.parse(payload["time"])
+    except Exception:
+        raise InvalidPayload("not a datetime string")
+
+    # Friday between 15h and 19h
+    if dt.weekday() == 4 and dt.hour in range(15, 19):
+        return int(fee * 1.2)
+
+    return fee
