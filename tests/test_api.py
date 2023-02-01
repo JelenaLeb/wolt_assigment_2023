@@ -41,6 +41,35 @@ client = TestClient(app)
             200,
             {"delivery_fee": 1200},
         ),
+        (
+            {
+                "delivery_distance": 2235,
+                "number_of_items": 4,
+                "time": "2021-10-12T13:00:00Z",
+            },
+            400,
+            {"detail": "missing 'cart_value' key"},
+        ),
+        (
+            {
+                "cart_value": -50,
+                "delivery_distance": 4235,
+                "number_of_items": 6,
+                "time": "2023-01-20T15:01:00Z",
+            },
+            400,
+            {"detail": "value of 'cart_value' does not comply"},
+        ),
+        (
+            {
+                "cart_value": "ABC",
+                "delivery_distance": 4235,
+                "number_of_items": 6,
+                "time": "2023-01-20T15:01:00Z",
+            },
+            400,
+            {"detail": "expecting 'cart_value' as int"},
+        ),
     ],
 )
 def test_post_fee_payload(payload, status_code, expected_result):

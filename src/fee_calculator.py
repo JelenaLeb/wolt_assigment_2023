@@ -15,7 +15,28 @@ class InvalidPayload(Exception):
     "raises domain exception when payload does not comply with specification"
 
 
+def guard_payload(payload: dict) -> None:
+    expected_payload = [
+        ("cart_value", int, lambda x: x >= 0),
+        ("delivery_distance", int, lambda x: x > 0),
+        ("number_of_items", int, lambda x: x > 0),
+        ("time", str, None),
+    ]
+
+    for key, value_type, value_check in expected_payload:
+        if key not in payload:
+            raise InvalidPayload(f"missing {key!r} key")
+
+        if not isinstance(payload[key], value_type):
+            raise InvalidPayload(f"expecting {key!r} as {value_type.__name__}")
+
+        if value_check and not value_check(payload[key]):
+            raise InvalidPayload(f"value of {key!r} does not comply")
+
+
 def calculate_fee(payload: dict) -> int:
+    guard_payload(payload)
+
     if payload["cart_value"] >= FREE_DELIVERY_MIN_AMOUNT:
         return 0
 
